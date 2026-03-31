@@ -57,6 +57,27 @@ resource "aws_cloudfront_origin_access_control" "site" {
 }
 
 # ---------------------------------------------------------------------------
+# CloudFront Function — rewrite directory-style paths to index.html
+# ---------------------------------------------------------------------------
+resource "aws_cloudfront_function" "url_rewrite" {
+  name    = "${var.project_name}-url-rewrite"
+  runtime = "cloudfront-js-2.0"
+  publish = true
+  code    = <<-EOT
+    function handler(event) {
+      var request = event.request;
+      var uri = request.uri;
+      if (uri.endsWith('/')) {
+        request.uri += 'index.html';
+      } else if (!uri.split('/').pop().includes('.')) {
+        request.uri += '/index.html';
+      }
+      return request;
+    }
+  EOT
+}
+
+# ---------------------------------------------------------------------------
 # CloudFront distribution
 # ---------------------------------------------------------------------------
 resource "aws_cloudfront_distribution" "site" {
@@ -83,6 +104,11 @@ resource "aws_cloudfront_distribution" "site" {
       cookies {
         forward = "none"
       }
+    }
+
+    function_association {
+      event_type   = "viewer-request"
+      function_arn = aws_cloudfront_function.url_rewrite.arn
     }
 
     # Long TTL for hashed assets; short TTL for HTML
