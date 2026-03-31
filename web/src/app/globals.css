@@ -1,0 +1,110 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+nav button {
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+body {
+  background: radial-gradient(circle at top left, #1f2937 0, #020617 52%, #000000 100%);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), system-ui, -apple-system, BlinkMacSystemFont,
+    "SF Pro Text", -apple-system, "Segoe UI", sans-serif;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+.shell {
+  max-width: 72rem;
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+}
+
+@media (min-width: 1024px) {
+  .shell {
+    padding-inline: 2rem;
+  }
+}
+
+.gradient-orbit {
+  position: relative;
+  isolation: isolate;
+}
+
+.gradient-orbit::before {
+  content: "";
+  position: absolute;
+  inset: -25%;
+  opacity: 0.5;
+  background:
+    radial-gradient(circle at top left, rgba(56, 189, 248, 0.55), transparent 60%),
+    radial-gradient(circle at bottom right, rgba(249, 115, 22, 0.45), transparent 55%);
+  filter: blur(40px);
+  z-index: -1;
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+.glass-panel {
+  background: radial-gradient(circle at top left, rgba(250, 250, 250, 0.06), transparent 55%),
+    rgba(15, 23, 42, 0.9);
+  border-radius: 1.8rem;
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  box-shadow:
+    0 24px 80px rgba(15, 23, 42, 0.9),
+    0 0 0 1px rgba(15, 23, 42, 0.5);
+  backdrop-filter: blur(22px);
+}
+
+.tag-pill {
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  background: radial-gradient(circle at top left, rgba(248, 250, 252, 0.08), transparent 60%),
+    rgba(15, 23, 42, 0.85);
+}
+
+.timeline-rail {
+  position: absolute;
+  inset-block: 0.25rem;
+  left: 0.6rem;
+  width: 2px;
+  border-radius: 999px;
+  background: linear-gradient(to bottom, #38bdf8, #a855f7, #f97316);
+  opacity: 0.75;
+}
+
+.timeline-node {
+  position: relative;
+  z-index: 1;
+  width: 0.9rem;
+  height: 0.9rem;
+  border-radius: 999px;
+  border: 2px solid #0b1120;
+  box-shadow: 0 0 0 1px rgba(148, 163, 184, 0.7);
+  background: radial-gradient(circle at 30% 20%, #38bdf8, #a855f7 55%, #f97316 100%);
+}
