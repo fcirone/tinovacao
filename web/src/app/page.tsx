@@ -1,6 +1,6 @@
-"use client";
-
-import { useState } from "react";
+import Link from "next/link";
+import SiteHeader from "@/components/SiteHeader";
+import { getAllPosts, type PostMeta } from "@/lib/blog";
 
 const EMAIL = "fabiocirone@gmail.com";
 const LINKEDIN_URL = "https://www.linkedin.com/in/fabiocirone";
@@ -15,72 +15,12 @@ const NAV_LINKS = [
 ];
 
 export default function Home() {
-  const [menuOpen, setMenuOpen] = useState(false);
+  const posts = getAllPosts().slice(0, 3);
 
   return (
     <div className="min-h-screen text-slate-100">
       <div className="shell py-8 lg:py-10">
-        <header className="border-b border-white/10 pb-5">
-          <div className="flex items-center justify-between gap-6">
-            <div className="flex items-center gap-3 min-w-0">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-slate-900 ring-1 ring-slate-500/60 shadow-[0_0_0_1px_rgba(15,23,42,0.9)]">
-                <span className="text-lg font-semibold tracking-tight text-cyan-300">
-                  FC
-                </span>
-              </div>
-              <div className="min-w-0 space-y-0.5">
-                <p className="truncate text-sm font-medium tracking-tight text-slate-200">
-                  Fabio Cirone
-                </p>
-                <p className="truncate text-xs text-slate-400">
-                  CTO · Gambling · Payments · Cloud Platforms
-                </p>
-              </div>
-            </div>
-
-            {/* Desktop nav */}
-            <nav className="hidden items-center gap-6 text-xs font-medium text-slate-300/90 md:flex">
-              {NAV_LINKS.map((link) => (
-                <a key={link.href} href={link.href} className="hover:text-cyan-300 transition-colors">
-                  {link.label}
-                </a>
-              ))}
-            </nav>
-
-            {/* Hamburger button */}
-            <button
-              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-slate-700/80 bg-slate-900/60 text-slate-300 transition hover:border-cyan-500/60 hover:text-cyan-300 md:hidden"
-              onClick={() => setMenuOpen((v) => !v)}
-              aria-label="Toggle menu"
-            >
-              {menuOpen ? (
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                  <path d="M2 2L14 14M14 2L2 14" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
-                </svg>
-              ) : (
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                  <path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
-                </svg>
-              )}
-            </button>
-          </div>
-
-          {/* Mobile menu */}
-          {menuOpen && (
-            <nav className="mt-4 flex flex-col gap-1 md:hidden">
-              {NAV_LINKS.map((link) => (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  onClick={() => setMenuOpen(false)}
-                  className="rounded-xl px-4 py-2.5 text-sm font-medium text-slate-200 transition hover:bg-slate-900/60 hover:text-cyan-300"
-                >
-                  {link.label}
-                </a>
-              ))}
-            </nav>
-          )}
-        </header>
+        <SiteHeader links={NAV_LINKS} />
 
         <main className="space-y-20 py-10 lg:space-y-24 lg:py-14">
           <HeroSection />
@@ -91,11 +31,61 @@ export default function Home() {
           <ContactSection />
         </main>
 
+        {posts.length > 0 && <BlogWidget posts={posts} />}
+
         <footer className="border-t border-white/10 pt-6 text-xs text-slate-500">
           <p>© {new Date().getFullYear()} Fabio Cirone.</p>
         </footer>
       </div>
     </div>
+  );
+}
+
+function formatDate(dateStr: string): string {
+  return new Date(dateStr).toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+}
+
+function BlogWidget({ posts }: { posts: PostMeta[] }) {
+  return (
+    <section className="border-t border-white/10 py-8">
+      <div className="flex items-baseline justify-between gap-4 mb-5">
+        <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">
+          From the blog
+        </p>
+        <Link
+          href="/blog"
+          className="text-xs text-slate-500 hover:text-cyan-300 transition-colors"
+        >
+          View all →
+        </Link>
+      </div>
+      <ul className="divide-y divide-white/5">
+        {posts.map((post) => (
+          <li key={post.slug}>
+            <Link
+              href={`/blog/${post.slug}`}
+              className="group flex items-baseline justify-between gap-6 py-3.5 transition hover:text-slate-50"
+            >
+              <div className="flex items-baseline gap-4 min-w-0">
+                <time className="shrink-0 text-[0.7rem] text-slate-500 tabular-nums">
+                  {formatDate(post.date)}
+                </time>
+                <span className="text-sm text-slate-300 group-hover:text-slate-50 transition-colors truncate">
+                  {post.title}
+                </span>
+              </div>
+              <span className="shrink-0 text-slate-600 group-hover:text-cyan-400 transition-colors text-xs">
+                →
+              </span>
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </section>
   );
 }
 
