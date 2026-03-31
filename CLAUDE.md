@@ -14,10 +14,8 @@ When asked to generate a blog post (with phrases like "gera um post", "create a 
 4. If the user provided a topic, use it. Otherwise, pick a suitable one from the topics list.
 5. Generate the full post following the editorial direction in the prompt file
 6. Write it directly to `web/content/blog/<slug>.md`
-7. Always set `status: draft` — never `status: published`
+7. Always set `status: published` — merging the PR is the publishing approval
 8. Report: filename created, title, slug, word count estimate
-
-The user will review, edit if needed, change status to `published`, and commit.
 
 ## Project structure
 
@@ -33,4 +31,4 @@ The user will review, edit if needed, change status to `published`, and commit.
 
 ## Publishing a post
 
-Change `status: draft` to `status: published` in the frontmatter, then commit and push to `main`. The deploy workflow handles the rest.
+Merge the PR to `main`. The deploy workflow handles the rest.

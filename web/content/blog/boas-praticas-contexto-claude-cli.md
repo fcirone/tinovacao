@@ -5,7 +5,7 @@ description: "O contexto que você fornece ao Claude CLI determina a qualidade d
 date: "2026-03-31"
 tags: ["AI", "developer tools", "engenharia de software"]
 author: "Fabio Cirone"
-status: draft
+status: published
 ---
 
 Quando um desenvolvedor reclama que o Claude "não entende o projeto" ou "fica repetindo código errado", o problema raramente é o modelo. Quase sempre é o contexto — ou a ausência dele. O Claude CLI opera em janelas de contexto com limite finito, e o que você coloca nessa janela determina, de forma direta, a utilidade do que volta. Isso soa óbvio, mas as implicações práticas são menos triviais do que parecem.

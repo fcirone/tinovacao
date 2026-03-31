@@ -51,13 +51,13 @@ description: "One or two sentences summarising the post. Used for SEO and post p
 date: "YYYY-MM-DD"
 tags: ["tag1", "tag2", "tag3"]
 author: "AUTHOR"
-status: draft
+status: published
 ---
 ```
 
 - `slug`: lowercase, hyphen-separated, no special characters, derived from title
 - `tags`: 2–4 relevant tags, lowercase, matching thematic areas
-- `status`: always `draft` — never `published`
+- `status`: always `published` — merging the PR is the publishing approval
 - `author`: use the AUTHOR variable provided
 - `date`: use the DATE variable provided
 

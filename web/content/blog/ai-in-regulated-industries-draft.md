@@ -5,7 +5,7 @@ description: "AI adoption in payments, gambling, and financial services looks di
 date: "2025-12-01"
 tags: ["AI", "regulated industries", "payments", "risk"]
 author: "Fabio Cirone"
-status: draft
+status: published
 ---
 
 *This is a draft post awaiting review.*
