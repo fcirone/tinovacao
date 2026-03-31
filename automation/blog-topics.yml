@@ -1,0 +1,85 @@
+# Curated topic list for AI blog post generation
+# Each entry: topic (the question/angle), slug (for deduplication), tags
+#
+# The generator picks randomly from this list, preferring topics not recently written about.
+# Add new topics here to expand the pool. Remove or comment out topics already well-covered.
+
+- topic: "What actually breaks when you scale a payments platform past 10 million daily transactions"
+  slug: "scaling-payments-platform"
+  tags: ["payments", "software architecture", "scalability"]
+
+- topic: "The real cost of technical debt in regulated industries and how to make the case for fixing it"
+  slug: "technical-debt-regulated-industries"
+  tags: ["engineering leadership", "technical debt", "regulated industries"]
+
+- topic: "How AI coding assistants change the economics of software delivery — and what they don't change"
+  slug: "ai-coding-assistants-economics"
+  tags: ["AI", "engineering productivity", "software delivery"]
+
+- topic: "Platform thinking for fintech: when to build shared infrastructure versus letting teams move independently"
+  slug: "platform-thinking-fintech"
+  tags: ["platform engineering", "fintech", "software architecture"]
+
+- topic: "Engineering due diligence in M&A: what to look for and what teams typically hide"
+  slug: "engineering-due-diligence-ma"
+  tags: ["M&A", "engineering leadership", "due diligence"]
+
+- topic: "The organisational failure modes that slow down engineering teams — and why most interventions don't work"
+  slug: "engineering-org-failure-modes"
+  tags: ["engineering leadership", "organisation", "delivery"]
+
+- topic: "Building a digital wallet from scratch: the decisions that matter most in the first six months"
+  slug: "building-digital-wallet-decisions"
+  tags: ["payments", "digital wallet", "product strategy"]
+
+- topic: "Why incident response is a product problem, not just an operations problem"
+  slug: "incident-response-product-problem"
+  tags: ["reliability", "engineering leadership", "operations"]
+
+- topic: "Practical AI governance for engineering teams: what to decide before deploying LLMs in production"
+  slug: "ai-governance-engineering-teams"
+  tags: ["AI", "governance", "engineering leadership"]
+
+- topic: "The CTO as a business partner: how to speak the language of the board without losing engineering credibility"
+  slug: "cto-business-partner"
+  tags: ["engineering leadership", "CTO", "business strategy"]
+
+- topic: "API design decisions that age well versus ones you will regret at scale"
+  slug: "api-design-decisions-scale"
+  tags: ["API design", "software architecture", "scalability"]
+
+- topic: "How to evaluate a cloud migration proposal: what vendors don't tell you about total cost"
+  slug: "cloud-migration-evaluation"
+  tags: ["cloud", "infrastructure", "cost"]
+
+- topic: "Hiring senior engineers in 2025: what signals actually predict performance versus what interviews measure"
+  slug: "hiring-senior-engineers-signals"
+  tags: ["hiring", "engineering leadership", "team building"]
+
+- topic: "The compliance surface of AI features in gambling products and how to build for auditability"
+  slug: "ai-compliance-gambling-products"
+  tags: ["AI", "gambling", "compliance", "regulated industries"]
+
+- topic: "When to rewrite versus refactor: a framework based on actual production decisions"
+  slug: "rewrite-vs-refactor-framework"
+  tags: ["software architecture", "refactoring", "engineering decisions"]
+
+- topic: "Engineering metrics that executives trust — and why the usual dashboards mislead"
+  slug: "engineering-metrics-executives"
+  tags: ["engineering leadership", "metrics", "delivery"]
+
+- topic: "Real-time data pipelines in regulated industries: what the architecture needs to handle beyond throughput"
+  slug: "real-time-pipelines-regulated"
+  tags: ["data architecture", "regulated industries", "infrastructure"]
+
+- topic: "From monolith to services: when the transition is worth it and when it creates more problems than it solves"
+  slug: "monolith-to-services-transition"
+  tags: ["software architecture", "microservices", "scalability"]
+
+- topic: "The operational reality of multi-tenant SaaS in a regulated sector — isolation, data residency, and audit"
+  slug: "multi-tenant-saas-regulated"
+  tags: ["SaaS", "regulated industries", "software architecture"]
+
+- topic: "What good engineering leadership looks like in the first 90 days of a new role"
+  slug: "engineering-leadership-first-90-days"
+  tags: ["engineering leadership", "CTO", "onboarding"]

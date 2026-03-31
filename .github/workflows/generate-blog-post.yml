@@ -1,0 +1,259 @@
+name: Generate Blog Post Draft
+
+on:
+  schedule:
+    # Runs every Monday at 08:00 UTC — adjust as needed
+    - cron: "0 8 * * 1"
+  workflow_dispatch:
+    inputs:
+      topic:
+        description: "Topic or question to write about (leave empty to pick from blog-topics.yml)"
+        required: false
+        type: string
+      title_override:
+        description: "Optional post title override"
+        required: false
+        type: string
+      tags:
+        description: "Comma-separated tags (e.g. AI, engineering leadership)"
+        required: false
+        type: string
+      language:
+        description: "Post language"
+        required: false
+        default: "Português Brasileiro"
+        type: string
+      dry_run:
+        description: "Dry run — generate post but do NOT open a PR"
+        required: false
+        default: "false"
+        type: boolean
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Pick topic
+        id: topic
+        run: |
+          MANUAL_TOPIC="${{ inputs.topic }}"
+
+          if [ -n "$MANUAL_TOPIC" ]; then
+            echo "topic=$MANUAL_TOPIC" >> "$GITHUB_OUTPUT"
+          else
+            # Pick a random topic from the curated list
+            TOPIC=$(node -e "
+              const fs = require('fs');
+              const yaml = require('./automation/parse-topics.js');
+              const raw = fs.readFileSync('automation/blog-topics.yml', 'utf8');
+              const topics = yaml(raw);
+              const recent = fs.existsSync('web/content/blog')
+                ? fs.readdirSync('web/content/blog').map(f => f.replace('.md','').toLowerCase())
+                : [];
+              const available = topics.filter(t => !recent.some(r => r.includes(t.slug)));
+              const pick = available.length > 0
+                ? available[Math.floor(Math.random() * available.length)]
+                : topics[Math.floor(Math.random() * topics.length)];
+              console.log(pick.topic);
+            ")
+            echo "topic=$TOPIC" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Write inline YAML parser helper
+        run: |
+          cat > automation/parse-topics.js << 'EOF'
+          // Minimal YAML list parser for blog-topics.yml
+          // Format: list of objects with keys: topic, slug, tags
+          module.exports = function parseTopics(raw) {
+            const topics = [];
+            const items = raw.split(/^- /m).slice(1);
+            for (const item of items) {
+              const topicMatch = item.match(/topic:\s*["']?(.+?)["']?\s*$/m);
+              const slugMatch = item.match(/slug:\s*["']?(.+?)["']?\s*$/m);
+              const tagsMatch = item.match(/tags:\s*\[(.+?)\]/m);
+              if (topicMatch) {
+                topics.push({
+                  topic: topicMatch[1].trim(),
+                  slug: slugMatch ? slugMatch[1].trim() : topicMatch[1].trim().toLowerCase().replace(/\s+/g, '-'),
+                  tags: tagsMatch ? tagsMatch[1].split(',').map(t => t.trim().replace(/['"]/g,'')) : [],
+                });
+              }
+            }
+            return topics;
+          };
+          EOF
+
+      - name: Build prompt
+        id: prompt
+        run: |
+          TOPIC="${{ steps.topic.outputs.topic }}"
+          LANGUAGE="${{ inputs.language || 'English' }}"
+          TITLE_OVERRIDE="${{ inputs.title_override }}"
+          AUTHOR="${{ vars.BLOG_AUTHOR_NAME || 'Fabio Cirone' }}"
+
+          # Load the prompt template and inject variables
+          PROMPT_TEMPLATE=$(cat automation/blog-prompt.md)
+          TODAY=$(date +%Y-%m-%d)
+
+          FULL_PROMPT="$PROMPT_TEMPLATE
+
+          ---
+
+          TOPIC: $TOPIC
+          LANGUAGE: $LANGUAGE
+          AUTHOR: $AUTHOR
+          DATE: $TODAY
+          $([ -n "$TITLE_OVERRIDE" ] && echo "TITLE OVERRIDE: $TITLE_OVERRIDE" || true)
+
+          Generate the full blog post now. Output ONLY the markdown file content — nothing else. Start with the YAML frontmatter block."
+
+          echo "$FULL_PROMPT" > /tmp/prompt.txt
+          echo "prompt_file=/tmp/prompt.txt" >> "$GITHUB_OUTPUT"
+
+      - name: Call AI API to generate post
+        id: generate
+        env:
+          AI_API_KEY: ${{ secrets.AI_API_KEY }}
+          AI_BASE_URL: ${{ vars.AI_BASE_URL || 'https://api.anthropic.com' }}
+          AI_MODEL: ${{ vars.AI_MODEL || 'claude-opus-4-6' }}
+        run: |
+          PROMPT=$(cat /tmp/prompt.txt)
+
+          # Build JSON payload — escape the prompt for JSON
+          PROMPT_JSON=$(node -e "process.stdout.write(JSON.stringify(process.argv[1]))" "$PROMPT")
+
+          # Detect provider by base URL and call accordingly
+          if echo "$AI_BASE_URL" | grep -q "anthropic"; then
+            RESPONSE=$(curl -sf "$AI_BASE_URL/v1/messages" \
+              -H "x-api-key: $AI_API_KEY" \
+              -H "anthropic-version: 2023-06-01" \
+              -H "content-type: application/json" \
+              -d "{
+                \"model\": \"$AI_MODEL\",
+                \"max_tokens\": 4096,
+                \"messages\": [{\"role\": \"user\", \"content\": $PROMPT_JSON}]
+              }")
+            echo "$RESPONSE" | node -e "
+              let d='';
+              process.stdin.on('data',c=>d+=c);
+              process.stdin.on('end',()=>{
+                const r=JSON.parse(d);
+                process.stdout.write(r.content[0].text);
+              });
+            " > /tmp/generated-post.md
+          else
+            # OpenAI-compatible endpoint
+            RESPONSE=$(curl -sf "$AI_BASE_URL/v1/chat/completions" \
+              -H "Authorization: Bearer $AI_API_KEY" \
+              -H "content-type: application/json" \
+              -d "{
+                \"model\": \"$AI_MODEL\",
+                \"max_tokens\": 4096,
+                \"messages\": [{\"role\": \"user\", \"content\": $PROMPT_JSON}]
+              }")
+            echo "$RESPONSE" | node -e "
+              let d='';
+              process.stdin.on('data',c=>d+=c);
+              process.stdin.on('end',()=>{
+                const r=JSON.parse(d);
+                process.stdout.write(r.choices[0].message.content);
+              });
+            " > /tmp/generated-post.md
+          fi
+
+          echo "Generated post preview:"
+          head -20 /tmp/generated-post.md
+
+      - name: Extract slug and set branch name
+        id: meta
+        run: |
+          SLUG=$(node -e "
+            const fs = require('fs');
+            const content = fs.readFileSync('/tmp/generated-post.md','utf8');
+            const match = content.match(/^slug:\s*[\"']?([a-z0-9-]+)[\"']?\s*$/m);
+            if (match) { process.stdout.write(match[1]); }
+            else {
+              const title = content.match(/^title:\s*[\"']?(.+?)[\"']?\s*\$/m);
+              const slug = title ? title[1].toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-\$/g,'') : 'blog-post';
+              process.stdout.write(slug);
+            }
+          ")
+          TODAY=$(date +%Y%m%d)
+          BRANCH="blog/draft-${SLUG}-${TODAY}"
+          FILENAME="${SLUG}.md"
+
+          echo "slug=$SLUG" >> "$GITHUB_OUTPUT"
+          echo "branch=$BRANCH" >> "$GITHUB_OUTPUT"
+          echo "filename=$FILENAME" >> "$GITHUB_OUTPUT"
+
+      - name: Save post to content directory
+        run: |
+          mkdir -p web/content/blog
+          cp /tmp/generated-post.md "web/content/blog/${{ steps.meta.outputs.filename }}"
+          echo "Saved to web/content/blog/${{ steps.meta.outputs.filename }}"
+
+      - name: Create branch and open PR
+        if: ${{ inputs.dry_run != 'true' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          BRANCH="${{ steps.meta.outputs.branch }}"
+          SLUG="${{ steps.meta.outputs.slug }}"
+          FILENAME="${{ steps.meta.outputs.filename }}"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git checkout -b "$BRANCH"
+          git add "web/content/blog/$FILENAME"
+          git commit -m "blog: add AI-generated draft — $SLUG"
+          git push origin "$BRANCH"
+
+          TITLE=$(node -e "
+            const fs = require('fs');
+            const content = fs.readFileSync('web/content/blog/$FILENAME','utf8');
+            const match = content.match(/^title:\s*[\"']?(.+?)[\"']?\s*\$/m);
+            process.stdout.write(match ? match[1] : 'AI Blog Draft: $SLUG');
+          ")
+
+          gh pr create \
+            --title "Blog draft: $TITLE" \
+            --body "## AI-Generated Blog Draft
+
+          **Slug:** \`$SLUG\`
+          **File:** \`web/content/blog/$FILENAME\`
+          **Status:** \`draft\` (will not appear in production until changed to \`published\`)
+
+          ### Review checklist
+          - [ ] Read the full post and assess quality / accuracy
+          - [ ] Edit as needed — tone, facts, length, structure
+          - [ ] Update frontmatter: title, description, tags, date
+          - [ ] Change \`status: draft\` to \`status: published\`
+          - [ ] Merge this PR to publish
+
+          > This post was generated by the [Generate Blog Post Draft](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) workflow." \
+            --base main \
+            --head "$BRANCH" \
+            --label "blog-draft"
+
+      - name: Dry run summary
+        if: ${{ inputs.dry_run == 'true' }}
+        run: |
+          echo "=== DRY RUN — no PR created ==="
+          echo "Would have created branch: ${{ steps.meta.outputs.branch }}"
+          echo "Would have saved: web/content/blog/${{ steps.meta.outputs.filename }}"
+          echo ""
+          echo "=== Generated post ==="
+          cat /tmp/generated-post.md

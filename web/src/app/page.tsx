@@ -11,6 +11,7 @@ const NAV_LINKS = [
   { href: "#expertise", label: "Expertise" },
   { href: "#portfolio", label: "Portfolio" },
   { href: "#contact", label: "Contact" },
+  { href: "/blog", label: "Blog" },
 ];
 
 export default function Home() {
