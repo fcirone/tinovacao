@@ -1,7 +1,7 @@
 ---
-title: "O mapa de ferramentas de IA para desenvolvimento em 2026"
+title: "Ferramentas de IA para desenvolvimento em 2026"
 slug: "ferramentas-ia-para-desenvolvimento-2026"
-description: "Claude Code, GitHub Copilot, Cursor, Continue e outros: um panorama prático das opções disponíveis, o que cada uma resolve bem e os modelos que as alimentam."
+description: "Claude Code, GitHub Copilot, Cursor, Continue e outros: opções disponíveis, o que cada uma resolve bem e os modelos que as alimentam."
 date: "2026-04-01"
 tags: ["AI", "engineering productivity", "ferramentas", "LLMs"]
 author: "Fabio Cirone"
@@ -12,7 +12,7 @@ O ecossistema de ferramentas de IA para desenvolvimento cresceu rápido demais p
 
 ## O que diferencia as ferramentas hoje
 
-Antes de listar ferramentas, vale entender o eixo de diferenciação que realmente importa: **onde vive o contexto**.
+Antes de listar ferramentas, vale entender algo importante na escolha: **onde vive o contexto**.
 
 Ferramentas integradas ao editor (Copilot, Codeium, Continue) trabalham com o que está visível na tela — arquivo aberto, seleção, buffer. São rápidas, têm baixa fricção e se encaixam no fluxo existente. A limitação é que o modelo só vê o que você mostrou. Para tarefas localizadas (completar uma função, explicar um bloco, sugerir um teste unitário), isso é suficiente e eficiente.
 
@@ -40,7 +40,7 @@ O Copilot Workspace, lançado em 2025, tenta entrar no espaço agentic: você de
 
 ## Cursor: o IDE que abraçou o modelo
 
-O Cursor é um fork do VS Code com IA integrada na camada mais profunda — não como extensão, mas como funcionalidade nativa. A diferença perceptível é que o contexto que ele constrói é maior e mais sofisticado: ele indexa o projeto inteiro, entende importações cruzadas e mantém contexto entre sessões.
+O Cursor é um fork do VS Code com IA integrada — não como extensão, mas como funcionalidade nativa. A diferença perceptível é que o contexto que ele constrói é maior e mais sofisticado: ele indexa o projeto inteiro, entende importações cruzadas e mantém contexto entre sessões.
 
 No modo Composer, ele funciona como agente: você descreve uma mudança, ele propõe os diffs em múltiplos arquivos e você aplica ou descarta. O modo normal de chat e completar é comparável ao Copilot, mas com contexto de projeto mais rico.
 
