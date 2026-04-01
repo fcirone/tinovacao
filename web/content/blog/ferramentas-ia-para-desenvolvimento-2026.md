@@ -5,7 +5,7 @@ description: "Claude Code, GitHub Copilot, Cursor, Continue e outros: um panoram
 date: "2026-04-01"
 tags: ["AI", "engineering productivity", "ferramentas", "LLMs"]
 author: "Fabio Cirone"
-status: draft
+status: published
 ---
 
 O ecossistema de ferramentas de IA para desenvolvimento cresceu rápido demais para qualquer desenvolvedor acompanhar em tempo real. Em menos de dois anos, saímos de "autocomplete mais esperto" para ambientes inteiros redesenhados em torno de agentes que leem, escrevem e executam código de forma autônoma. O problema não é mais falta de opções — é entender quais vale a pena adotar, para quê, e o que você abre mão em cada escolha.
