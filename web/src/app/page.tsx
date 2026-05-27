@@ -4,6 +4,33 @@ import { getAllPosts, type PostMeta } from "@/lib/blog";
 
 const EMAIL = "fabiocirone@gmail.com";
 const LINKEDIN_URL = "https://www.linkedin.com/in/fabiocirone";
+const BASE_URL = "https://fabiocirone.com";
+
+const PERSON_JSON_LD = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Fabio Cirone",
+  url: BASE_URL,
+  jobTitle: "CTO",
+  description:
+    "Technology executive specialising in gambling, payments, and high-scale platforms. 25+ years in tech across LatAm, EMEA, and the US.",
+  sameAs: [LINKEDIN_URL],
+  knowsAbout: [
+    "Online gambling platforms",
+    "Payment systems",
+    "Cloud architecture",
+    "Engineering leadership",
+    "iGaming",
+    "AWS",
+  ],
+};
+
+const WEBSITE_JSON_LD = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "Fabio Cirone",
+  url: BASE_URL,
+};
 
 const NAV_LINKS = [
   { href: "#about", label: "About" },
@@ -19,6 +46,14 @@ export default function Home() {
 
   return (
     <div className="min-h-screen text-slate-100">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(PERSON_JSON_LD) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(WEBSITE_JSON_LD) }}
+      />
       <div className="shell py-8 lg:py-10">
         <SiteHeader links={NAV_LINKS} />
 

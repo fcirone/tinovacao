@@ -70,3 +70,23 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
 export function getAllPublishedSlugs(): string[] {
   return getAllPosts(false).map((p) => p.slug);
 }
+
+export function tagToSlug(tag: string): string {
+  return tag
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
+export function getAllTags(): string[] {
+  const posts = getAllPosts();
+  const tags = new Set<string>();
+  for (const post of posts) {
+    for (const tag of post.tags) {
+      tags.add(tag);
+    }
+  }
+  return Array.from(tags);
+}

@@ -14,9 +14,24 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://fabiocirone.com"),
   title: "Fabio Cirone | CTO · Gambling & Payments",
   description:
     "Portfolio and career overview of Fabio Cirone, CTO specialising in gambling, payments, and high-scale platforms.",
+  openGraph: {
+    type: "website",
+    siteName: "Fabio Cirone",
+    title: "Fabio Cirone | CTO · Gambling & Payments",
+    description:
+      "Portfolio and career overview of Fabio Cirone, CTO specialising in gambling, payments, and high-scale platforms.",
+    url: "https://fabiocirone.com",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Fabio Cirone | CTO · Gambling & Payments",
+    description:
+      "Portfolio and career overview of Fabio Cirone, CTO specialising in gambling, payments, and high-scale platforms.",
+  },
 };
 
 export default function RootLayout({
@@ -27,6 +42,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        <link
+          rel="alternate"
+          type="application/rss+xml"
+          title="Fabio Cirone — Blog"
+          href="https://fabiocirone.com/feed.xml"
+        />
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-CLT4J4MDGG"
           strategy="afterInteractive"

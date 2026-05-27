@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import SiteHeader from "@/components/SiteHeader";
-import { getAllPublishedSlugs, getPostBySlug } from "@/lib/blog";
+import { getAllPublishedSlugs, getPostBySlug, tagToSlug } from "@/lib/blog";
+
+const BASE_URL = "https://fabiocirone.com";
 
 const NAV_LINKS = [
   { href: "/", label: "Home" },
@@ -29,12 +31,62 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `${post.title} | Fabio Cirone`,
     description: post.description,
+    alternates: {
+      canonical: `/blog/${post.slug}/`,
+    },
+    openGraph: {
+      type: "article",
+      siteName: "Fabio Cirone",
+      title: post.title,
+      description: post.description,
+      url: `${BASE_URL}/blog/${post.slug}/`,
+      locale: "pt_BR",
+      publishedTime: `${post.date}T00:00:00.000Z`,
+      authors: ["Fabio Cirone"],
+      tags: post.tags,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description: post.description,
+    },
   };
 }
 
 function formatDate(dateStr: string): string {
-  const d = new Date(dateStr);
-  return d.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+  return new Date(dateStr).toLocaleDateString("pt-BR", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+}
+
+function buildBlogPostingJsonLd(post: Awaited<ReturnType<typeof getPostBySlug>>) {
+  if (!post) return null;
+  return {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: post.title,
+    description: post.description,
+    datePublished: `${post.date}T00:00:00.000Z`,
+    url: `${BASE_URL}/blog/${post.slug}/`,
+    inLanguage: "pt-BR",
+    author: {
+      "@type": "Person",
+      name: "Fabio Cirone",
+      url: BASE_URL,
+    },
+    publisher: {
+      "@type": "Person",
+      name: "Fabio Cirone",
+      url: BASE_URL,
+    },
+    keywords: post.tags.join(", "),
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": `${BASE_URL}/blog/${post.slug}/`,
+    },
+  };
 }
 
 export default async function BlogPost({ params }: Props) {
@@ -45,8 +97,16 @@ export default async function BlogPost({ params }: Props) {
     notFound();
   }
 
+  const jsonLd = buildBlogPostingJsonLd(post);
+
   return (
     <div className="min-h-screen text-slate-100">
+      {jsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      )}
       <div className="shell py-8 lg:py-10">
         <SiteHeader links={NAV_LINKS} />
 
@@ -65,20 +125,24 @@ export default async function BlogPost({ params }: Props) {
                   strokeLinejoin="round"
                 />
               </svg>
-              All posts
+              Todos os posts
             </Link>
           </div>
 
-          <article className="max-w-2xl">
+          <article className="max-w-2xl" lang="pt-BR">
             <header className="mb-8">
               <div className="flex flex-wrap items-center gap-2 mb-4">
                 <time className="text-xs text-slate-500" dateTime={post.date}>
                   {formatDate(post.date)}
                 </time>
                 {post.tags.map((tag) => (
-                  <span key={tag} className="tag-pill px-2.5 py-0.5 text-xs text-slate-400">
+                  <Link
+                    key={tag}
+                    href={`/blog/tag/${tagToSlug(tag)}/`}
+                    className="tag-pill px-2.5 py-0.5 text-xs text-slate-400 hover:text-cyan-300 transition-colors"
+                  >
                     {tag}
-                  </span>
+                  </Link>
                 ))}
               </div>
 
@@ -91,7 +155,7 @@ export default async function BlogPost({ params }: Props) {
               </p>
 
               {post.author && (
-                <p className="mt-4 text-xs text-slate-500">By {post.author}</p>
+                <p className="mt-4 text-xs text-slate-500">Por {post.author}</p>
               )}
             </header>
 

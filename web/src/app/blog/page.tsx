@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import SiteHeader from "@/components/SiteHeader";
-import { getAllPosts } from "@/lib/blog";
+import { getAllPosts, tagToSlug } from "@/lib/blog";
 
 export const metadata: Metadata = {
   title: "Blog | Fabio Cirone",
   description:
-    "Practical writing on engineering leadership, software architecture, AI, payments, and technology strategy by Fabio Cirone.",
+    "Escrita prática sobre liderança de engenharia, arquitetura de software, IA, pagamentos e estratégia de tecnologia por Fabio Cirone.",
+  alternates: { canonical: "/blog/" },
 };
 
 const NAV_LINKS = [
@@ -19,8 +20,7 @@ const NAV_LINKS = [
 ];
 
 function formatDate(dateStr: string): string {
-  const d = new Date(dateStr);
-  return d.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+  return new Date(dateStr).toLocaleDateString("pt-BR", { day: "numeric", month: "long", year: "numeric" });
 }
 
 export default function BlogIndex() {
@@ -37,8 +37,8 @@ export default function BlogIndex() {
               Blog
             </h1>
             <p className="mt-3 text-base text-slate-400 max-w-2xl">
-              Practical thinking on engineering leadership, software architecture, AI, payments, and
-              technology strategy.
+              Escrita prática sobre liderança de engenharia, arquitetura de software, IA, pagamentos
+              e estratégia de tecnologia.
             </p>
           </div>
 
@@ -56,9 +56,13 @@ export default function BlogIndex() {
                       {formatDate(post.date)}
                     </time>
                     {post.tags.map((tag) => (
-                      <span key={tag} className="tag-pill px-2.5 py-0.5 text-xs text-slate-400">
+                      <Link
+                        key={tag}
+                        href={`/blog/tag/${tagToSlug(tag)}/`}
+                        className="tag-pill px-2.5 py-0.5 text-xs text-slate-400 hover:text-cyan-300 transition-colors"
+                      >
                         {tag}
-                      </span>
+                      </Link>
                     ))}
                   </div>
 
@@ -77,7 +81,7 @@ export default function BlogIndex() {
                     href={`/blog/${post.slug}`}
                     className="inline-flex items-center gap-1.5 text-xs font-medium text-cyan-400 hover:text-cyan-300 transition-colors"
                   >
-                    Read post
+                    Ler post
                     <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
                       <path
                         d="M2 6h8M7 3l3 3-3 3"
