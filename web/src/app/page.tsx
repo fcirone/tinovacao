@@ -4,7 +4,7 @@ import { getAllPosts, type PostMeta } from "@/lib/blog";
 
 const EMAIL = "fabiocirone@gmail.com";
 const LINKEDIN_URL = "https://www.linkedin.com/in/fabiocirone";
-const BASE_URL = "https://fabiocirone.com";
+const BASE_URL = "https://tinovacao.com";
 
 const PERSON_JSON_LD = {
   "@context": "https://schema.org",

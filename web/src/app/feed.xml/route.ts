@@ -2,7 +2,7 @@ import { getAllPosts } from "@/lib/blog";
 
 export const dynamic = "force-static";
 
-const BASE_URL = "https://fabiocirone.com";
+const BASE_URL = "https://tinovacao.com";
 
 export function GET() {
   const posts = getAllPosts();

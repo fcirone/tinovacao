@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://fabiocirone.com/sitemap.xml
+Sitemap: https://tinovacao.com/sitemap.xml

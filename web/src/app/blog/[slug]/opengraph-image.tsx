@@ -37,7 +37,7 @@ export default async function Image({ params }: { params: Promise<{ slug: string
         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
           <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#22d3ee" }} />
           <span style={{ color: "#94a3b8", fontSize: 18, letterSpacing: "0.15em", textTransform: "uppercase" }}>
-            fabiocirone.com
+            tinovacao.com
           </span>
         </div>
 

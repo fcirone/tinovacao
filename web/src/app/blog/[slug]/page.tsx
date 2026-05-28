@@ -4,7 +4,7 @@ import Link from "next/link";
 import SiteHeader from "@/components/SiteHeader";
 import { getAllPublishedSlugs, getPostBySlug, tagToSlug } from "@/lib/blog";
 
-const BASE_URL = "https://fabiocirone.com";
+const BASE_URL = "https://tinovacao.com";
 
 const NAV_LINKS = [
   { href: "/", label: "Home" },

@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://fabiocirone.com"),
+  metadataBase: new URL("https://tinovacao.com"),
   title: "Fabio Cirone | CTO · Gambling & Payments",
   description:
     "Portfolio and career overview of Fabio Cirone, CTO specialising in gambling, payments, and high-scale platforms.",
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     title: "Fabio Cirone | CTO · Gambling & Payments",
     description:
       "Portfolio and career overview of Fabio Cirone, CTO specialising in gambling, payments, and high-scale platforms.",
-    url: "https://fabiocirone.com",
+    url: "https://tinovacao.com",
   },
   twitter: {
     card: "summary_large_image",
@@ -46,7 +46,7 @@ export default function RootLayout({
           rel="alternate"
           type="application/rss+xml"
           title="Fabio Cirone — Blog"
-          href="https://fabiocirone.com/feed.xml"
+          href="https://tinovacao.com/feed.xml"
         />
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-CLT4J4MDGG"
