@@ -2,7 +2,6 @@ import Link from "next/link";
 import SiteHeader from "@/components/SiteHeader";
 import { getAllPosts, type PostMeta } from "@/lib/blog";
 
-const EMAIL = "fabiocirone@gmail.com";
 const LINKEDIN_URL = "https://www.linkedin.com/in/fabiocirone";
 const BASE_URL = "https://tinovacao.com";
 
@@ -848,18 +847,12 @@ function ContactSection() {
 
       <div className="flex flex-wrap items-center gap-4 text-xs text-slate-200">
         <a
-          href={`mailto:${EMAIL}`}
-          className="inline-flex items-center gap-2 rounded-full bg-slate-50 px-4 py-2.5 font-semibold text-slate-900 shadow-lg shadow-cyan-500/40 ring-1 ring-slate-200 transition hover:-translate-y-0.5 hover:bg-cyan-100 hover:text-slate-950 hover:ring-cyan-400/80"
-        >
-          <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-          Email Fabio
-        </a>
-        <a
           href={LINKEDIN_URL}
           target="_blank"
           rel="noreferrer"
-          className="inline-flex items-center gap-2 rounded-full border border-slate-700/80 bg-slate-950/60 px-4 py-2.5 font-medium text-slate-100 ring-1 ring-slate-900/60 transition hover:-translate-y-0.5 hover:border-cyan-500/80 hover:text-cyan-100"
+          className="inline-flex items-center gap-2 rounded-full bg-slate-50 px-4 py-2.5 font-semibold text-slate-900 shadow-lg shadow-cyan-500/40 ring-1 ring-slate-200 transition hover:-translate-y-0.5 hover:bg-cyan-100 hover:text-slate-950 hover:ring-cyan-400/80"
         >
+          <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
           Connect on LinkedIn
         </a>
       </div>
